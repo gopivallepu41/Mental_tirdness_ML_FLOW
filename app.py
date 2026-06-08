@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
-import mlflow
-import mlflow.pyfunc
+import joblib
 import os
 
 # ─────────────────────────────────────────────
@@ -14,13 +13,12 @@ st.set_page_config(
 )
 
 # ─────────────────────────────────────────────
-# MODEL CONFIG
+# LOAD MODEL — model.pkl must be in same folder as app.py
 # ─────────────────────────────────────────────
-MODEL_PATH = "file:///C:/Users/somas/OneDrive/Desktop/Mental_tirdness/mlruns/5/models/m-08ea8d8e78394dddb0c95f9def68c5fb/artifacts"
-
 @st.cache_resource
 def load_model():
-    return mlflow.pyfunc.load_model(MODEL_PATH)
+    model_path = os.path.join(os.path.dirname(__file__), "model.pkl")
+    return joblib.load(model_path)
 
 try:
     model = load_model()
@@ -92,8 +90,8 @@ input_df = pd.DataFrame([{
     "number_of_decisions_made": number_of_decisions_made,
     "context_switch_count":     context_switch_count,
     "notifications_received":   notifications_received,
-    "screen_time_min":          screen_time_min,
-    "deep_work_min":            deep_work_min,
+    "screen_time_min":          float(screen_time_min),
+    "deep_work_min":            float(deep_work_min),
     "task_complexity_avg":      task_complexity_avg,
     "caffeine_mg":              caffeine_mg,
     "break_frequency":          break_frequency,
